@@ -1,0 +1,30 @@
+FROM ubuntu:latest
+
+LABEL description="Python 3.7 and Jupyter Lab intended for distributed python programs with Dask"
+
+# update and install utilities
+RUN apt-get update
+RUN apt-get install -y wget
+
+# install Anaconda3
+RUN wget https://repo.anaconda.com/archive/Anaconda3-2018.12-Linux-x86_64.sh
+RUN bash Anaconda3-2018.12-Linux-x86_64.sh -b
+ENV PATH="/root/anaconda3/bin:$PATH"
+
+# install the AWS CLI
+RUN pip install awscli --upgrade --user
+ENV PATH="/root/.local/bin:$PATH"
+
+# install Jupyter Lab
+RUN conda install -y -c conda-forge jupyterlab
+RUN jupyter notebook --generate-config
+
+# install graphviz on system
+RUN pip install graphviz
+
+# install graphviz for python
+RUN conda install -c anaconda graphviz
+
+# expose ports for jupyter and dask
+EXPOSE 8888
+EXPOSE 8787
